@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Factures</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #444;
+        }
+
+        .header-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .header-image img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #eaf3ff;
+        }
+
+        .actions a {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 5px;
+            font-size: 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .actions .edit-btn {
+            background-color: #FFC107;
+        }
+
+        .actions .delete-btn {
+            background-color: #DC3545;
+        }
+
+        .actions a:hover {
+            opacity: 0.8;
+        }
+
+        form {
+            margin: 20px auto;
+            padding: 20px;
+            width: 50%;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        form input, form button, form label {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px auto;
+            display: block;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        form button {
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Image en-tête -->
+<div class="header-image">
+    <img src="/static/images/invoice-icon.png" alt="Factures Icon" />
+</div>
+
+<h1>Gestion des Factures</h1>
+
+<!-- Tableau des factures -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Client</th>
+        <th>Montant</th>
+        <th>Date</th>
+        <th>Image</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="facture : ${factures}">
+        <td th:text="${facture.id}"></td>
+        <td th:text="${facture.client}"></td>
+        <td th:text="${facture.montant}"></td>
+        <td th:text="${facture.dateFacture}"></td>
+        <td>
+            <img th:src="${facture.imagePath}" alt="Image" style="max-width: 100px; max-height: 100px;" />
+        </td>
+        <td class="actions">
+            <a th:href="@{/factures/modifier/{id}(id=${facture.id})}" class="edit-btn">Modifier</a>
+            <a th:href="@{/factures/supprimer/{id}(id=${facture.id})}" class="delete-btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')">Supprimer</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Formulaire d'ajout de facture -->
+<h2>Ajouter une Facture</h2>
+<form action="/factures/ajouter" method="post" enctype="multipart/form-data">
+    <label for="client">Client :</label>
+    <input type="text" name="client" placeholder="Nom du client" required />
+
+    <label for="montant">Montant :</label>
+    <input type="number" step="0.01" name="montant" placeholder="Montant de la facture" required />
+
+    <label for="dateFacture">Date :</label>
+    <input type="date" name="dateFacture" required />
+
+    <label for="image">Téléverser une image :</label>
+    <input type="file" name="image" accept="image/*" />
+
+    <button type="submit">Ajouter Facture</button>
+</form>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span> - Gestion des Factures</p>
+</footer>
+
+</body>
+</html>
